@@ -2,6 +2,7 @@ package com.pjqdyd;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import tk.mybatis.spring.annotation.MapperScan;
 
 /**   
  * @Description:  [启动主类]
@@ -10,6 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 
 @SpringBootApplication
+@MapperScan(basePackages = "com.pjqdyd.mapper")
 public class SpringBootShardingJDBCApplication {
 
     public static void main(String[] args){
