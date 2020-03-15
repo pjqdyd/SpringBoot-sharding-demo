@@ -1,0 +1,71 @@
+spring:
+  application:
+    name: sharding-jdbc
+  shardingsphere:
+    props:
+      sql:
+        show: true #是否显示sql
+    datasource:
+      names: ds0,ds1 #两个数据源
+      ds0:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        jdbc-url: jdbc:mysql://localhost:3306/db_myshop_0?useUnicode=true&characterEncoding=utf-8&serverTimezone=Hongkong&useSSL=false
+        username: root
+        password: '123456'
+        hikari:
+          minimum-idle: 5
+          idle-timeout: 600000
+          maximum-pool-size: 10
+          auto-commit: true
+          pool-name: MyHikariCP
+          max-lifetime: 1800000
+          connection-timeout: 30000
+          connection-test-query: SELECT 1
+      ds1:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        jdbc-url: jdbc:mysql://localhost:33060/db_myshop_1?useUnicode=true&characterEncoding=utf-8&serverTimezone=Hongkong&useSSL=false
+        username: root
+        password: '123456'
+        hikari:
+          minimum-idle: 5
+          idle-timeout: 600000
+          maximum-pool-size: 10
+          auto-commit: true
+          pool-name: MyHikariCP
+          max-lifetime: 1800000
+          connection-timeout: 30000
+          connection-test-query: SELECT 1
+    #分片规则
+    sharding:
+      #绑定逻辑表
+      binding-tables: tb_order,tb_order_item
+      #默认的分片策略
+      default-database-strategy:
+        inline:
+          #分片分库表达式, 符合groovy语法, 这里根据user_id分库
+          #user_id是奇数落入ds1匹配的数据库, 偶数则落入ds0数据库
+          algorithm-expression: ds$->{user_id % 2}
+          sharding-column: user_id #分片列的名称
+      tables:
+        tb_order:
+          #实际表: 数据源名+表名组成
+          actual-data-nodes: ds$->{0..1}.tb_order_$->{0..1}
+          table-strategy:
+            inline:
+              #根据订单id分表
+              algorithm-expression: tb_order_$->{order_id % 2}
+              sharding-column: order_id
+        tb_order_item:
+          #实际表: 数据源名+表名组成
+          actual-data-nodes: ds$->{0..1}.tb_order_item_$->{0..1}
+          table-strategy:
+            inline:
+              #根据订单id分表
+              algorithm-expression: tb_order_item_$->{order_id % 2}
+              sharding-column: order_id
+
+mybatis:
+  type-aliases-package: com.pjqdyd.domain
+  mapper-locations: classpath:mapper/*.xml
