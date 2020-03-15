@@ -8,6 +8,7 @@ import lombok.Data;
 @Table(name = "tb_order_item")
 public class TbOrderItem implements Serializable {
     @Id
+    //@GeneratedValue(generator = "JDBC")
     @Column(name = "id")
     private Long id;
 

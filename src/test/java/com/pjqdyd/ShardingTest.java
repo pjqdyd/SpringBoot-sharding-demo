@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**   
  * @Description:  [测试分库分表]
@@ -36,6 +37,25 @@ public class ShardingTest {
 
         int result = tbOrderMapper.insert(tbOrder);
         Assert.assertEquals(1, result);
+    }
+
+    @Test
+    public void testInsertOrder1(){
+        TbOrder tbOrder = new TbOrder();
+        tbOrder.setId(2L);
+        tbOrder.setUserId(2L);
+        tbOrder.setOrderId(2L);
+
+        int result = tbOrderMapper.insert(tbOrder);
+        Assert.assertEquals(1, result);
+    }
+
+    @Test
+    public void testSelectAll(){
+        List<TbOrder> tbOrders = tbOrderMapper.selectAll();
+        tbOrders.forEach(tbOrder -> {
+            System.out.println(tbOrder);
+        });
     }
 
 }
