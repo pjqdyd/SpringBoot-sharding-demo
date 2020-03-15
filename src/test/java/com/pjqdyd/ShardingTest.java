@@ -58,4 +58,12 @@ public class ShardingTest {
         });
     }
 
+    @Test
+    public void testSelectOne(){
+        TbOrder tbOrder = new TbOrder();
+        tbOrder.setId(1L);
+        TbOrder result = tbOrderMapper.selectOne(tbOrder);
+        System.out.println(result);
+    }
+
 }
